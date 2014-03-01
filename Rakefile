@@ -9,7 +9,7 @@ task :test => [:"precompile:coffeescript", :"jasmine:phantom:ci"]
 namespace :precompile do
   desc "Precompile source and test coffeescript"
   task :coffeescript do
-    Dir["assets/js/**/*.js", "spec/javascripts/**/*.js"].each do |file|
+    FileList["assets/js/**/*.js", "spec/javascripts/**/*.js"].each do |file|
       new_file = "tmp/" + file
       puts "Copying #{file} to #{new_file}"
       FileUtils.mkpath(File.dirname(new_file))
@@ -17,7 +17,7 @@ namespace :precompile do
       puts "#{file} copied"
     end
 
-    Dir["assets/js/**/*.coffee", "spec/javascripts/**/*.coffee"].each do |file|
+    FileList["assets/js/**/*.coffee", "spec/javascripts/**/*.coffee"].each do |file|
       new_file = "tmp/" + File.dirname(file) + "/" + File.basename(file, ".coffee") + ".js"
       puts "Compiling #{file} to #{new_file}"
       10.times { print "."; sleep 0.1 }
