@@ -4,9 +4,7 @@ require "rake/clean"
 CLEAN.add "tmp/*"
 
 desc "Run the jasmine tests"
-task :test => [:clean, :"precompile:coffeescript", :"jasmine:phantom:ci"] do
-  Rake::Task[:"clean"].execute
-end
+task :test => [:"precompile:coffeescript", :"jasmine:phantom:ci"]
 
 namespace :precompile do
   desc "Precompile source and test coffeescript"
