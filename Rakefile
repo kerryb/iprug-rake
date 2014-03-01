@@ -3,21 +3,24 @@ require "rake/clean"
 
 CLEAN.add "tmp/*"
 
+JS_SOURCES = FileList["assets/js/**/*.js", "spec/javascripts/**/*.js"]
+COFFEESCRIPT_SOURCES = FileList["assets/js/**/*.coffee", "spec/javascripts/**/*.coffee"]
+
 desc "Run the jasmine tests"
 task :test => [:"precompile:coffeescript", :"jasmine:phantom:ci"]
 
 namespace :precompile do
   desc "Precompile source and test coffeescript"
   task :coffeescript do
-    FileList["assets/js/**/*.js", "spec/javascripts/**/*.js"].each do |file|
-      new_file = "tmp/" + file
+    JS_SOURCES.each do |file|
+      new_file = file.sub(/^/, "tmp/")
       puts "Copying #{file} to #{new_file}"
       FileUtils.mkpath(File.dirname(new_file))
       FileUtils.cp file, new_file
       puts "#{file} copied"
     end
 
-    FileList["assets/js/**/*.coffee", "spec/javascripts/**/*.coffee"].each do |file|
+    COFFEESCRIPT_SOURCES.each do |file|
       new_file = "tmp/" + File.dirname(file) + "/" + File.basename(file, ".coffee") + ".js"
       puts "Compiling #{file} to #{new_file}"
       10.times { print "."; sleep 0.1 }
