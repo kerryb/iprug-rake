@@ -8,10 +8,12 @@ COFFEESCRIPT_SOURCES = FileList["assets/js/**/*.coffee", "spec/javascripts/**/*.
 
 JS_SOURCES.each do |file|
   copied_file = file.sub(/^/, "tmp/")
+  dir = File.dirname(copied_file)
 
-  file copied_file => file do
+  directory dir
+
+  file copied_file => [file, dir] do
     puts "Copying #{file} to #{copied_file}"
-    FileUtils.mkpath(File.dirname(copied_file))
     FileUtils.cp file, copied_file
     puts "#{file} copied"
   end
@@ -21,11 +23,13 @@ end
 
 COFFEESCRIPT_SOURCES.each do |file|
   compiled_file = file.sub(/^/, "tmp/").ext("js")
+  dir = File.dirname(compiled_file)
 
-  file compiled_file => file do
+  directory dir
+
+  file compiled_file => [file, dir] do
     puts "Compiling #{file} to #{compiled_file}"
     10.times { print "."; sleep 0.1 }
-    FileUtils.mkpath(File.dirname(compiled_file))
     File.write compiled_file, CoffeeScript.compile(File.read(file))
     puts "\n#{file} compiled"
   end
