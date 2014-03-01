@@ -1,7 +1,9 @@
 require "coffee-script"
 
 desc "Run the jasmine tests"
-task :test => [:"precompile:cleanup", :"precompile:coffeescript", :"jasmine:phantom:ci", :"precompile:cleanup"]
+task :test => [:"precompile:cleanup", :"precompile:coffeescript", :"jasmine:phantom:ci"] do
+  Rake::Task[:"precompile:cleanup"].invoke
+end
 
 namespace :precompile do
   desc "Precompile source and test coffeescript"
