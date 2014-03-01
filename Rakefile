@@ -1,8 +1,11 @@
 require "coffee-script"
+require "rake/clean"
+
+CLEAN.add "tmp/*"
 
 desc "Run the jasmine tests"
-task :test => [:"precompile:cleanup", :"precompile:coffeescript", :"jasmine:phantom:ci"] do
-  Rake::Task[:"precompile:cleanup"].execute
+task :test => [:clean, :"precompile:coffeescript", :"jasmine:phantom:ci"] do
+  Rake::Task[:"clean"].execute
 end
 
 namespace :precompile do
@@ -39,13 +42,6 @@ namespace :precompile do
       javascript = CoffeeScript.compile File.read(file_path)
       File.write(new_file_path, javascript)
     end
-  end
-
-  desc "Remove temporary files"
-  task :cleanup do
-    puts "Removing temporary files"
-    FileUtils.rm_rf "tmp"
-    FileUtils.mkdir "tmp"
   end
 end
 
