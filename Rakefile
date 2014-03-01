@@ -18,7 +18,7 @@ JS_SOURCES.each do |file|
     puts "#{file} copied"
   end
 
-  task :test => copied_file
+  multitask :prepare_files => copied_file
 end
 
 COFFEESCRIPT_SOURCES.each do |file|
@@ -34,11 +34,11 @@ COFFEESCRIPT_SOURCES.each do |file|
     puts "\n#{file} compiled"
   end
 
-  task :test => compiled_file
+  multitask :prepare_files => compiled_file
 end
 
 desc "Run the jasmine tests"
-task :test => :"jasmine:phantom:ci"
+task :test => [:prepare_files, :"jasmine:phantom:ci"]
 
 # dummy for demo
 namespace :jasmine do
