@@ -1,8 +1,10 @@
 require "coffee-script"
 
+desc "Run the jasmine tests"
 task :test => [:"precompile:cleanup", :"precompile:coffeescript", :"jasmine:phantom:ci", :"precompile:cleanup"]
 
 namespace :precompile do
+  desc "Precompile source and test coffeescript"
   task :coffeescript do
     Dir["assets/js/**/*.js"].each do |file_name|
       new_file_name = "tmp/" + file_name
@@ -37,6 +39,7 @@ namespace :precompile do
     end
   end
 
+  desc "Remove temporary files"
   task :cleanup do
     FileUtils.rm_rf "tmp"
     FileUtils.mkdir "tmp"
