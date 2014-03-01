@@ -41,6 +41,7 @@ namespace :precompile do
 
   desc "Remove temporary files"
   task :cleanup do
+    puts "Removing temporary files"
     FileUtils.rm_rf "tmp"
     FileUtils.mkdir "tmp"
   end
