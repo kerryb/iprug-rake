@@ -7,31 +7,22 @@ JS_SOURCES = FileList["assets/js/**/*.js", "spec/javascripts/**/*.js"]
 COFFEESCRIPT_SOURCES = FileList["assets/js/**/*.coffee", "spec/javascripts/**/*.coffee"]
 
 TARGETS = (JS_SOURCES + COFFEESCRIPT_SOURCES).pathmap "tmp/%X.js"
-TARGET_DIRS = TARGETS.pathmap "%d"
+TARGET_DIRS = TARGETS.pathmap("%d")
 TARGET_DIRS.each {|d| directory d}
 
-JS_SOURCES.each do |file|
-  copied_file = file.pathmap "tmp/%p"
+task :test => TARGET_DIRS
+task :test => TARGETS
 
-  file copied_file => [file, copied_file.pathmap("%d")] do
-    FileUtils.cp file, copied_file
-  end
-
-  multitask :prepare_files => copied_file
+rule(/^tmp\/.*\.js$/ => ->(target) { target.sub(/^tmp\//, "").ext "coffee" }) do |t|
+  File.write t.name, CoffeeScript.compile(File.read(t.source))
 end
 
-COFFEESCRIPT_SOURCES.each do |file|
-  compiled_file = file.pathmap "tmp/%X.js"
-
-  file compiled_file => [file, compiled_file.pathmap("%d")] do
-    File.write compiled_file, CoffeeScript.compile(File.read(file))
-  end
-
-  multitask :prepare_files => compiled_file
+rule(/^tmp\/.*\.js$/ => ->(target) { target.sub(/^tmp\//, "") }) do |t|
+  FileUtils.cp t.source, t.name
 end
 
 desc "Run the jasmine tests"
-task :test => [:prepare_files, :"jasmine:phantom:ci"]
+task :test => :"jasmine:phantom:ci"
 
 # dummy for demo
 namespace :jasmine do
