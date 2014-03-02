@@ -27,11 +27,11 @@ task :test => :"jasmine:phantom:ci"
 # dummy for demo
 namespace :jasmine do
   namespace :phantom do
-    task :ci, [:test] do |t, args|
-      if args.test
-        puts "Test #{args.test} has passed"
+    task :ci do |t, args|
+      if args.extras.empty?
+        puts "All tests passed"
       else
-        puts "Your tests have all passed (honest!)"
+        puts "Test(s) passed: [#{args.extras.join ", "}]"
       end
     end
   end
