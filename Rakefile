@@ -6,16 +6,15 @@ CLEAN.add "tmp/*"
 JS_SOURCES = FileList["assets/js/**/*.js", "spec/javascripts/**/*.js"]
 COFFEESCRIPT_SOURCES = FileList["assets/js/**/*.coffee", "spec/javascripts/**/*.coffee"]
 
+TARGETS = (JS_SOURCES + COFFEESCRIPT_SOURCES).pathmap "tmp/%X.js"
+TARGET_DIRS = TARGETS.pathmap "%d"
+TARGET_DIRS.each {|d| directory d}
+
 JS_SOURCES.each do |file|
   copied_file = file.pathmap "tmp/%p"
-  dir = File.dirname(copied_file)
 
-  directory dir
-
-  file copied_file => [file, dir] do
-    puts "Copying #{file} to #{copied_file}"
+  file copied_file => [file, copied_file.pathmap("%d")] do
     FileUtils.cp file, copied_file
-    puts "#{file} copied"
   end
 
   multitask :prepare_files => copied_file
@@ -23,15 +22,9 @@ end
 
 COFFEESCRIPT_SOURCES.each do |file|
   compiled_file = file.pathmap "tmp/%X.js"
-  dir = File.dirname(compiled_file)
 
-  directory dir
-
-  file compiled_file => [file, dir] do
-    puts "Compiling #{file} to #{compiled_file}"
-    10.times { print "."; sleep 0.1 }
+  file compiled_file => [file, compiled_file.pathmap("%d")] do
     File.write compiled_file, CoffeeScript.compile(File.read(file))
-    puts "\n#{file} compiled"
   end
 
   multitask :prepare_files => compiled_file
