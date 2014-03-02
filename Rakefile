@@ -7,7 +7,7 @@ JS_SOURCES = FileList["assets/js/**/*.js", "spec/javascripts/**/*.js"]
 COFFEESCRIPT_SOURCES = FileList["assets/js/**/*.coffee", "spec/javascripts/**/*.coffee"]
 
 JS_SOURCES.each do |file|
-  copied_file = file.sub(/^/, "tmp/")
+  copied_file = file.pathmap "tmp/%p"
   dir = File.dirname(copied_file)
 
   directory dir
@@ -22,7 +22,7 @@ JS_SOURCES.each do |file|
 end
 
 COFFEESCRIPT_SOURCES.each do |file|
-  compiled_file = file.sub(/^/, "tmp/").ext("js")
+  compiled_file = file.pathmap "tmp/%X.js"
   dir = File.dirname(compiled_file)
 
   directory dir
