@@ -27,8 +27,12 @@ task :test => :"jasmine:phantom:ci"
 # dummy for demo
 namespace :jasmine do
   namespace :phantom do
-    task :ci do
-      puts "Your tests have all passed (honest!)"
+    task :ci, [:test] do |t, args|
+      if args.test
+        puts "Test #{args.test} has passed"
+      else
+        puts "Your tests have all passed (honest!)"
+      end
     end
   end
 end
